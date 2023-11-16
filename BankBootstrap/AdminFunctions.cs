@@ -17,7 +17,6 @@ namespace BankBootstrap
         {
             using (BankContext context = new BankContext())
             {
-
                 Console.WriteLine("Current users in system:");
                 List<User> users = DbHelper.GetAllUsers(context);
 
@@ -46,7 +45,6 @@ namespace BankBootstrap
                         default:
                             Console.WriteLine($"Unknown input: {command}");
                             break;
-
                     }
                 }
             }
