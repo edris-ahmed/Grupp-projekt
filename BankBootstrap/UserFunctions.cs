@@ -13,7 +13,9 @@ namespace BankBootstrap
         private static void UserChoices(User user, BankContext context)
         {
             string choice = "";
-            
+            string input = "";
+            Account selectedAccount = null;
+
             while (choice != "6")
             {
                 Console.WriteLine($"[1] See your accounts and balance");
@@ -29,27 +31,22 @@ namespace BankBootstrap
                 switch (choice)
                 {
                     case "3":
-                        
-                        Console.WriteLine("Select the account to withdraw from");
-                        string input = Console.ReadLine();
-
                         Console.WriteLine("Select the account to withdraw from (enter the account [Name] or [Id]");
+                        input = Console.ReadLine();
 
+                        selectedAccount = user.Accounts.FirstOrDefault(a => a.Name == input || a.Id.ToString() == input);
 
-                        bool accountExists = context.Users
-                            .Any(a => a.Id.ToString() == searchValue || a.Name == searchValue);
-
-                        if (accountExists)
+                        if (selectedAccount != null)
                         {
                             Console.Write("Enter the amount to withdraw: ");
 
                             if (double.TryParse(Console.ReadLine(), out double withdrawAmount))
                             {
-                                if (account.Balance >= withdrawAmount)
+                                if (selectedAccount.Balance >= withdrawAmount)
                                 {
-                                    account.Balance -= withdrawAmount;
+                                    selectedAccount.Balance -= withdrawAmount;
                                     context.SaveChanges();
-                                    Console.WriteLine($"Withdrawal successfull. Updated balance: {account.Balance}");
+                                    Console.WriteLine($"Withdrawal successfull. Updated balance: {selectedAccount.Balance}");
                                 }
                                 else
                                 {
@@ -66,17 +63,34 @@ namespace BankBootstrap
                             Console.WriteLine("No account matching the criteria found.");
                         }
                         break;
+
                     case "4":
+                        Console.WriteLine("Select the account to deposit into (enter the account [Name] or [Id]");
+                        input = Console.ReadLine();
+
+                        selectedAccount = user.Accounts.FirstOrDefault(a => a.Name == input || a.Id.ToString() == input);
+
+                        if (selectedAccount != null)
                         {
-                            Console.Write("Enter the amount to deposit: ");
+                            Console.WriteLine("Enter the amount to deposit");
+
                             if (double.TryParse(Console.ReadLine(), out double depositAmount))
                             {
-                                account.Balance += depositAmount;
+                                selectedAccount.Balance += depositAmount;
                                 context.SaveChanges();
-                                Console.WriteLine($"Deposit successfull. Updated Balance: {account.Balance}");
+                                Console.WriteLine($"Deposit successfull. Updated balance: {selectedAccount.Balance}");
                             }
-                            break;
+                            else
+                            {
+                                Console.WriteLine("Insufficent funds. ");
+                            }
                         }
+                        else
+                        {
+                            Console.WriteLine("No account matching the criteria found.");
+                        }
+                        break;
+                        
                     case "6":
                         Console.WriteLine("Logging out...");
                         break;
