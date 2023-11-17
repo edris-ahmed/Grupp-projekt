@@ -1,5 +1,6 @@
 ﻿using BankBootstrap.Data;
 using BankBootstrap.Models;
+using BankBootstrap.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -88,6 +89,29 @@ namespace BankBootstrap
                         else
                         {
                             Console.WriteLine("No account matching the criteria found.");
+                        }
+                        break;
+
+                    case "5":
+                        Console.Write("What would you like the account name to be?");
+                        input = Console.ReadLine();
+
+                        Account newAccount = new Account()
+                        {
+                            Name = input,
+                            User = user,
+                            UserId = user.Id,
+                        };
+
+                        bool success = DbHelper.AddAccount(context, newAccount);
+
+                        if (success)
+                        {
+                            Console.WriteLine($"Successfully created account {input}.");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Failed to create account {input}");
                         }
                         break;
                         
