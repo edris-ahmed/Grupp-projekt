@@ -40,7 +40,7 @@ namespace BankBootstrap
                             CreateUser(context);
                             break;
                         case "x":
-                            return;8
+                            return;
                             break;
                         default:
                             Console.WriteLine($"Unknown input: {command}");

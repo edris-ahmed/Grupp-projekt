@@ -1,5 +1,8 @@
 ﻿using BankBootstrap.Data;
+using BankBootstrap.Models;
 using BankBootstrap.Utilities;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Principal;
 
 namespace BankBootstrap
 {
@@ -18,7 +21,7 @@ namespace BankBootstrap
 
             if (userName == "admin")
             {
-                if(pin != "1234")
+                if (pin != "1234")
                 {
                     Console.WriteLine("Wrong pin!");
                     return;
@@ -27,7 +30,9 @@ namespace BankBootstrap
                 AdminFunctions.DoAdminTasks();
                 return;
             }
-
+            
+            
+            
             using (BankContext context = new BankContext())
             {
                 bool userExists = context.Users.Any(u => u.Name == userName);
@@ -36,6 +41,7 @@ namespace BankBootstrap
                 if (userExists && pinExists)
                 {
                     Console.WriteLine($"Logged in to user {userName}");
+                    
                 }
                 else
                 {
@@ -45,8 +51,13 @@ namespace BankBootstrap
             }
 
             
+            
 
-            //user login here
+
+
+
+            
+
         }
     }
 }

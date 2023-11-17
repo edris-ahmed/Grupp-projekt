@@ -15,7 +15,7 @@ namespace BankBootstrap.Utilities
             List<User> users = context.Users.ToList();
             return users;
         }
-
+        
         public static bool AddUser(BankContext context, User user)
         {
             context.Users.Add(user);

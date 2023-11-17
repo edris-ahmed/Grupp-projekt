@@ -4,14 +4,15 @@ using BankBootstrap.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BankBootstrap
 {
-    internal static class UserFunctions 
+    internal static class UserFunctions
     {
-        private static void PerfromUserChoices(User user, BankContext context)
+        public static void PerformUserChoices(BankContext context, User user, Account account)
         {
             string choice = "";
             string input1 = "";
@@ -20,7 +21,7 @@ namespace BankBootstrap
             Account selectedAccounts1 = null;
             Account selectedAccounts2 = null;
 
-            while (choice != "6")
+            while (true)
             {
                 Console.WriteLine($"[1] See your accounts and balance");
                 Console.WriteLine($"[2] Transfer money between accounts");
@@ -31,9 +32,26 @@ namespace BankBootstrap
 
                 Console.Write("Enter an option: ");
                 choice = Console.ReadLine();
-                
+
+                //koden för case 1
+                static List<Account> GetAllAccounts(BankContext context, User user, Account account)
+                {
+                    List<Account> accounts = context.Accounts.ToList();
+                    Console.WriteLine($"Account(s) and balance(s) {user.Name}");
+                    foreach ( Account account1 in accounts )
+                    {
+                        Console.WriteLine($"Account(s): {account.Name}, Balance(s): {account.Balance}");
+                    }
+                    return accounts;
+
+                }
+
                 switch (choice)
                 {
+                    case "1":
+                        GetAllAccounts(context, user, account);
+                        break;
+                        
                     case "2":
                         Console.Write("Choose the account to take money from enter [Name] or [Id]: ");
                         input1 = Console.ReadLine();
@@ -159,10 +177,16 @@ namespace BankBootstrap
                     case "6":
                         Console.WriteLine("Logging out...");
                         break;
+
+                    default:
+                        Console.WriteLine($"Wrong input: {choice}");
+                        break;
                 }
             
             }
 
         }
+
+        
     }
 }
