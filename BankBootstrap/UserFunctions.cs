@@ -34,6 +34,14 @@ namespace BankBootstrap
                 
                 switch (choice)
                 {
+                    case "1":
+                        Console.WriteLine("Your accounts and balances:");
+                        foreach (var account in user.Accounts)
+                        {
+                            Console.WriteLine($"Account: {account.Name}, Balance: {account.Balance}");
+                        }
+                        break;
+
                     case "2":
                         Console.Write("Choose the account to take money from enter [Name] or [Id]: ");
                         input1 = Console.ReadLine();
