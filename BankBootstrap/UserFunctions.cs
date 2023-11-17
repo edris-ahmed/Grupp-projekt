@@ -11,11 +11,14 @@ namespace BankBootstrap
 {
     internal static class UserFunctions 
     {
-        private static void UserChoices(User user, BankContext context)
+        private static void PerfromUserChoices(User user, BankContext context)
         {
             string choice = "";
-            string input = "";
+            string input1 = "";
+            string input2 = "";
             Account selectedAccount = null;
+            Account selectedAccounts1 = null;
+            Account selectedAccounts2 = null;
 
             while (choice != "6")
             {
@@ -31,11 +34,49 @@ namespace BankBootstrap
                 
                 switch (choice)
                 {
+                    case "2":
+                        Console.Write("Choose the account to take money from enter [Name] or [Id]: ");
+                        input1 = Console.ReadLine();
+                        Console.Write("Choose the account to transfer money to enter [Name] or [Id]: ");
+                        input2 = Console.ReadLine(); 
+
+                        selectedAccounts1 = user.Accounts.FirstOrDefault(a => a.Name == input1 || a.Id.ToString() == input1);
+                        selectedAccounts2 = user.Accounts.FirstOrDefault(a => a.Name == input2 || a.Id.ToString() == input2);
+
+                        if (selectedAccounts1 != null && selectedAccounts2 != null)
+                        {
+                            Console.WriteLine("Enter the transfer amount: ");
+
+                            if (double.TryParse(Console.ReadLine(), out double transferAmount))
+                            {
+                                if (selectedAccounts1.Balance >= transferAmount)
+                                {
+                                    selectedAccounts1.Balance -= transferAmount;
+                                    selectedAccounts2.Balance += transferAmount;
+                                    context.SaveChanges();
+                                    Console.WriteLine($"Transfer successfull. Updated balance for account {selectedAccounts2.Name} is {selectedAccounts2.Balance}");
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Insufficent funds.");
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid input. Please enter a valid number.");
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("One or both of the accounts did not match the criteria.");
+                        }
+                        break;
+
                     case "3":
                         Console.WriteLine("Select the account to withdraw from (enter the account [Name] or [Id]");
-                        input = Console.ReadLine();
+                        input1 = Console.ReadLine();
 
-                        selectedAccount = user.Accounts.FirstOrDefault(a => a.Name == input || a.Id.ToString() == input);
+                        selectedAccount = user.Accounts.FirstOrDefault(a => a.Name == input1 || a.Id.ToString() == input1);
 
                         if (selectedAccount != null)
                         {
@@ -51,7 +92,7 @@ namespace BankBootstrap
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Insufficient funds. ");
+                                    Console.WriteLine("Insufficient funds.");
                                 }
                             }
                             else
@@ -67,9 +108,9 @@ namespace BankBootstrap
 
                     case "4":
                         Console.WriteLine("Select the account to deposit into (enter the account [Name] or [Id]");
-                        input = Console.ReadLine();
+                        input1 = Console.ReadLine();
 
-                        selectedAccount = user.Accounts.FirstOrDefault(a => a.Name == input || a.Id.ToString() == input);
+                        selectedAccount = user.Accounts.FirstOrDefault(a => a.Name == input1 || a.Id.ToString() == input1);
 
                         if (selectedAccount != null)
                         {
@@ -94,11 +135,11 @@ namespace BankBootstrap
 
                     case "5":
                         Console.Write("What would you like the account name to be?");
-                        input = Console.ReadLine();
+                        input1 = Console.ReadLine();
 
                         Account newAccount = new Account()
                         {
-                            Name = input,
+                            Name = input1,
                             User = user,
                             UserId = user.Id,
                         };
@@ -107,11 +148,11 @@ namespace BankBootstrap
 
                         if (success)
                         {
-                            Console.WriteLine($"Successfully created account {input}.");
+                            Console.WriteLine($"Successfully created account {input1}.");
                         }
                         else
                         {
-                            Console.WriteLine($"Failed to create account {input}");
+                            Console.WriteLine($"Failed to create account {input1}");
                         }
                         break;
                         
