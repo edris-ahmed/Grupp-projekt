@@ -69,7 +69,7 @@ namespace BankBootstrap
             
             if (success)
             {
-                Console.WriteLine($"Created user {username} with pin");
+                Console.WriteLine($"Created user {username} with pin: {pin}");
             }
             else
             {
