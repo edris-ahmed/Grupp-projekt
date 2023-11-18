@@ -91,128 +91,188 @@ namespace BankBootstrap
 
         private static void TransferBetweenAccounts()
         {
-            Console.Write("Choose the account to take money from enter [Name] or [Id]: ");
-            string input1 = Console.ReadLine();
-            Console.Write("Choose the account to transfer money to enter [Name] or [Id]: ");
-            string input2 = Console.ReadLine();
+            bool exitLoop = false;
 
-            var selectedAccounts1 = currentUser.Accounts.FirstOrDefault(a => a.Name == input1 || a.Id.ToString() == input1);
-            var selectedAccounts2 = currentUser.Accounts.FirstOrDefault(a => a.Name == input2 || a.Id.ToString() == input2);
-
-            if (selectedAccounts1 != null && selectedAccounts2 != null)
+            while (!exitLoop)
             {
-                Console.WriteLine("Enter the transfer amount: ");
+                Console.Write("Choose the account to take money from enter [Name] or [Id] or [Quit] to go back to the options: ");
+                string input1 = Console.ReadLine();
+                Console.Write("Choose the account to transfer money to enter [Name] or [Id] or [Quit] to go back to the options: ");
+                string input2 = Console.ReadLine();
 
-                if (double.TryParse(Console.ReadLine(), out double transferAmount))
+                if (input1.ToLower() == "quit" || input2.ToLower() == "quit")
                 {
-                    if (selectedAccounts1.Balance >= transferAmount)
+                    exitLoop = true;
+                }
+
+                var selectedAccounts1 = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+                var selectedAccounts2 = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input2.ToLower() || a.Id.ToString() == input2);
+
+                if (selectedAccounts1 != null && selectedAccounts2 != null)
+                {
+                    Console.WriteLine("Enter the transfer amount: ");
+
+                    if (double.TryParse(Console.ReadLine(), out double transferAmount))
                     {
-                        selectedAccounts1.Balance -= transferAmount;
-                        selectedAccounts2.Balance += transferAmount;
-                        currentContext.SaveChanges();
-                        Console.WriteLine($"Transfer successfull. Updated balance for account {selectedAccounts2.Name} is {selectedAccounts2.Balance}");
+                        if (transferAmount > 0)
+                        {
+                            if (selectedAccounts1.Balance >= transferAmount)
+                            {
+                                selectedAccounts1.Balance -= transferAmount;
+                                selectedAccounts2.Balance += transferAmount;
+                                currentContext.SaveChanges();
+                                Console.WriteLine($"Transfer successfull. Updated balance for account {selectedAccounts2.Name} is {selectedAccounts2.Balance}");
+                                exitLoop = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Insufficent funds.");
+                            }
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Insufficent funds.");
+                        Console.WriteLine("Invalid input. Please enter a valid number.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid number.");
+                    Console.WriteLine("One or both of the accounts did not match the criteria.");
                 }
-            }
-            else
-            {
-                Console.WriteLine("One or both of the accounts did not match the criteria.");
             }
         }
 
         private static void WithdrawFromAccount()
         {
-            Console.WriteLine("Select the account to withdraw from (enter the account [Name] or [Id]");
-            string input1 = Console.ReadLine();
+            bool exitLoop = false;
 
-            var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name == input1 || a.Id.ToString() == input1);
-
-            if (selectedAccount != null)
+            while (!exitLoop)
             {
-                Console.Write("Enter the amount to withdraw: ");
+                Console.WriteLine("Select the account to withdraw from (enter the account [Name] or [Id] or [Quit] to go back to the options: ");
+                string input1 = Console.ReadLine();
 
-                if (double.TryParse(Console.ReadLine(), out double withdrawAmount))
+                if (input1.ToLower() == "quit")
                 {
-                    if (selectedAccount.Balance >= withdrawAmount)
+                    exitLoop = true;
+                }
+
+                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+
+                if (selectedAccount != null)
+                {
+                    Console.Write("Enter the amount to withdraw: ");
+
+                    if (double.TryParse(Console.ReadLine(), out double withdrawAmount))
                     {
-                        selectedAccount.Balance -= withdrawAmount;
-                        currentContext.SaveChanges();
-                        Console.WriteLine($"Withdrawal successfull. Updated balance: {selectedAccount.Balance}");
-                    }
+                        if (withdrawAmount > 0)
+                        {
+                            if (selectedAccount.Balance >= withdrawAmount)
+                            {
+                                selectedAccount.Balance -= withdrawAmount;
+                                currentContext.SaveChanges();
+                                Console.WriteLine($"Withdrawal successfull. Updated balance: {selectedAccount.Balance}");
+                                exitLoop = true;
+                            }
+                            else
+                            {
+                                Console.WriteLine("Insufficient funds.");
+                            }
+                        }                    }
                     else
                     {
-                        Console.WriteLine("Insufficient funds.");
+                        Console.WriteLine("Invalid input. Please enter a valid number.");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Invalid input. Please enter a valid number.");
+                    Console.WriteLine("No account matching the criteria found.");
                 }
-            }
-            else
-            {
-                Console.WriteLine("No account matching the criteria found.");
             }
         }
 
         private static void DepositToAccount()
         {
-            Console.WriteLine("Select the account to deposit into (enter the account [Name] or [Id]");
-            string input1 = Console.ReadLine();
+            bool exitLoop = false;
 
-            var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name == input1 || a.Id.ToString() == input1);
-
-            if (selectedAccount != null)
+            while (!exitLoop)
             {
-                Console.WriteLine("Enter the amount to deposit");
+                Console.WriteLine("Select the account to deposit into (enter the account [Name] or [Id] or [Quit] to go back to the options: ");
+                string input1 = Console.ReadLine();
 
-                if (double.TryParse(Console.ReadLine(), out double depositAmount))
+                if (input1.ToLower() == "quit")
                 {
-                    selectedAccount.Balance += depositAmount;
-                    currentContext.SaveChanges();
-                    Console.WriteLine($"Deposit successfull. Updated balance: {selectedAccount.Balance}");
+                    exitLoop = true;
+                }
+
+                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1 || a.Id.ToString() == input1);
+
+                if (selectedAccount != null)
+                {
+                    Console.WriteLine("Enter the amount to deposit");
+
+                    if (double.TryParse(Console.ReadLine(), out double depositAmount))
+                    {
+                        if (depositAmount > 0)
+                        {
+                            selectedAccount.Balance += depositAmount;
+                            currentContext.SaveChanges();
+                            Console.WriteLine($"Deposit successfull. Updated balance: {selectedAccount.Balance}");
+                            exitLoop = true;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Please enter a valid number.");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("Insufficent funds. ");
+                    Console.WriteLine("No account matching the criteria found.");
                 }
             }
-            else
-            {
-                Console.WriteLine("No account matching the criteria found.");
-            }
+            
         }
 
         private static void OpenNewAccount()
         {
-            Console.Write("What would you like the account name to be?");
-            string input1 = Console.ReadLine();
+            bool exitLoop = false;
 
-            Account newAccount = new Account()
+            while (!exitLoop)
             {
-                Name = input1,
-                User = currentUser,
-                UserId = currentUser.Id,
-            };
+                Console.Write("What would you like the account name to be?");
+                string input1 = Console.ReadLine();
 
-            bool success = DbHelper.AddAccount(currentContext, newAccount);
+                Account newAccount = new Account()
+                {
+                    Name = input1,
+                    User = currentUser,
+                    UserId = currentUser.Id,
+                };
 
-            if (success)
-            {
-                Console.WriteLine($"Successfully created account {input1}.");
-            }
-            else
-            {
-                Console.WriteLine($"Failed to create account {input1}");
-            }
+                bool success = DbHelper.AddAccount(currentContext, newAccount);
+
+                if (success)
+                {
+                    Console.WriteLine($"Successfully created account {input1}.");
+                    exitLoop = true;
+                }
+                else
+                {
+                    Console.WriteLine($"Failed to create account {input1}");
+                    Console.WriteLine("Would you like to try again? [No] To go back to options menu and [Yes] to try agian.");
+                    input1 = Console.ReadLine().ToLower();
+
+                    while (input1 != "yes" || input1 != "no")
+                    {
+                        Console.WriteLine("Please answer with either [Yes] to try again or [No] to go back to the options menu");
+                    }
+
+                    if (input1 == "no")
+                    {
+                        exitLoop = true;
+                    }
+                }
+            }  
         }
 
         private static void LogOut()
