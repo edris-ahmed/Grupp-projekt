@@ -19,6 +19,7 @@ namespace BankBootstrap
         {
             currentUser = user;
             currentContext = context;
+            choice = "";
 
             while (choice != "6")
             {
@@ -75,17 +76,10 @@ namespace BankBootstrap
 
         private static void ShowAccountBalance()
         {
-            if (currentUser.Accounts.Count() == 0)
+            Console.WriteLine("Your accounts and balances:\n");
+            foreach (var account in currentContext.Accounts)
             {
-                Console.WriteLine("You have no accounts yet. Press 5 to open a new account.");
-            }
-            else
-            {
-                Console.WriteLine("Your accounts and balances:");
-                foreach (var account in currentUser.Accounts)
-                {
-                    Console.WriteLine($"Account: {account.Name}\nBalance: {account.Balance}\n");
-                }
+                Console.WriteLine($"Account: {account.Name}\nBalance: {account.Balance}\n");
             }
         }
 
@@ -97,20 +91,26 @@ namespace BankBootstrap
             {
                 Console.Write("Choose the account to take money from enter [Name] or [Id] or [Quit] to go back to the options: ");
                 string input1 = Console.ReadLine();
-                Console.Write("Choose the account to transfer money to enter [Name] or [Id] or [Quit] to go back to the options: ");
-                string input2 = Console.ReadLine();
 
-                if (input1.ToLower() == "quit" || input2.ToLower() == "quit")
+                if (input1.ToLower() == "quit")
                 {
                     exitLoop = true;
                 }
 
-                var selectedAccounts1 = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
-                var selectedAccounts2 = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input2.ToLower() || a.Id.ToString() == input2);
+                Console.Write("Choose the account to transfer money to enter [Name] or [Id] or [Quit] to go back to the options: ");
+                string input2 = Console.ReadLine();
+
+                if (input2.ToLower() == "quit")
+                {
+                    exitLoop = true;
+                }
+
+                var selectedAccounts1 = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+                var selectedAccounts2 = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input2.ToLower() || a.Id.ToString() == input2);
 
                 if (selectedAccounts1 != null && selectedAccounts2 != null)
                 {
-                    Console.WriteLine("Enter the transfer amount: ");
+                    Console.Write("Enter the transfer amount: ");
 
                     if (double.TryParse(Console.ReadLine(), out double transferAmount))
                     {
@@ -148,7 +148,7 @@ namespace BankBootstrap
 
             while (!exitLoop)
             {
-                Console.WriteLine("Select the account to withdraw from (enter the account [Name] or [Id] or [Quit] to go back to the options: ");
+                Console.Write("Select the account to withdraw from (enter the account [Name] or [Id] or [Quit] to go back to the options: ");
                 string input1 = Console.ReadLine();
 
                 if (input1.ToLower() == "quit")
@@ -156,7 +156,7 @@ namespace BankBootstrap
                     exitLoop = true;
                 }
 
-                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+                var selectedAccount = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
 
                 if (selectedAccount != null)
                 {
@@ -196,7 +196,7 @@ namespace BankBootstrap
 
             while (!exitLoop)
             {
-                Console.WriteLine("Select the account to deposit into (enter the account [Name] or [Id] or [Quit] to go back to the options: ");
+                Console.Write("Select the account to deposit into (enter the account [Name] or [Id] or [Quit] to go back to the options: ");
                 string input1 = Console.ReadLine();
 
                 if (input1.ToLower() == "quit")
@@ -204,11 +204,11 @@ namespace BankBootstrap
                     exitLoop = true;
                 }
 
-                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1 || a.Id.ToString() == input1);
+                var selectedAccount = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1 || a.Id.ToString() == input1);
 
                 if (selectedAccount != null)
                 {
-                    Console.WriteLine("Enter the amount to deposit");
+                    Console.Write("Enter the amount to deposit: ");
 
                     if (double.TryParse(Console.ReadLine(), out double depositAmount))
                     {
@@ -216,7 +216,7 @@ namespace BankBootstrap
                         {
                             selectedAccount.Balance += depositAmount;
                             currentContext.SaveChanges();
-                            Console.WriteLine($"Deposit successfull. Updated balance: {selectedAccount.Balance}");
+                            Console.WriteLine($"Deposit successfull. Updated balance: {selectedAccount.Balance}\n");
                             exitLoop = true;
                         }
                     }

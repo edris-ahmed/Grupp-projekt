@@ -17,7 +17,7 @@ namespace BankBootstrap
 
                 if (userChoice == "quit")
                 {
-                    return;
+                    break;
                 }
 
                 Console.Write("Enter username: ");
@@ -60,10 +60,14 @@ namespace BankBootstrap
                     }
                     else
                     {
-                        Console.WriteLine("No user with that username or pin exists");
+                        Console.WriteLine("\nNo user with that username or pin exists\n");
                     }
                 }
             }
+
+            Console.WriteLine();
+            Console.Write("Press any key to quit: ");
+            Console.ReadKey();
         }
     }
 }
