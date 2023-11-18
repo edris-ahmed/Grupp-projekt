@@ -26,22 +26,23 @@ namespace BankBootstrap
                 }
 
                 Console.WriteLine($"Total number of users = {users.Count()}");
-                Console.WriteLine("c to create new user");
-                Console.WriteLine("x to exit");
+                Console.WriteLine("[C] to create new user");
+                Console.WriteLine("[X] to exit back to [Main]");
 
                 while (true)
                 {
                     Console.Write("Enter command: ");
-                    string command = Console.ReadLine();
+                    string command = Console.ReadLine().ToLower();
 
                     switch (command)
                     {
                         case "c":
                             CreateUser(context);
                             break;
+
                         case "x":
-                            return;8
-                            break;
+                            return;
+
                         default:
                             Console.WriteLine($"Unknown input: {command}");
                             break;
@@ -62,7 +63,7 @@ namespace BankBootstrap
             User newUser = new User()
             {
                 Name = username,
-                Pin = pin,
+                Pin = pin
             };
             bool success = DbHelper.AddUser(context, newUser);
             

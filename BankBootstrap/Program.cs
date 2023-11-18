@@ -1,4 +1,5 @@
 ﻿using BankBootstrap.Data;
+using BankBootstrap.Models;
 using BankBootstrap.Utilities;
 
 namespace BankBootstrap
@@ -7,46 +8,62 @@ namespace BankBootstrap
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to NET23Bank");
-            Console.WriteLine("Please log in");
-
-            Console.Write("Enter username: ");
-            string userName = Console.ReadLine();
-            
-            Console.Write("Enter pin: ");
-            string pin = Console.ReadLine();
-
-            if (userName == "admin")
+            while (true)
             {
-                if(pin != "1234")
+                Console.WriteLine("Welcome to NET23Bank");
+                Console.Write("Would you like to log in or quit the program? Type [Login] to log in or [Quit] to quit: ");
+
+                string userChoice = Console.ReadLine().ToLower();
+
+                if (userChoice == "quit")
                 {
-                    Console.WriteLine("Wrong pin!");
                     return;
                 }
 
-                AdminFunctions.DoAdminTasks();
-                return;
-            }
+                Console.Write("Enter username: ");
+                string userName = Console.ReadLine();
 
-            using (BankContext context = new BankContext())
-            {
-                bool userExists = context.Users.Any(u => u.Name == userName);
-                bool pinExists = context.Users.Any(p => p.Pin == pin);
+                Console.Write("Enter pin: ");
+                string pin = Console.ReadLine();
 
-                if (userExists && pinExists)
+                if (userName == "admin")
                 {
-                    Console.WriteLine($"Logged in to user {userName}");
+                    if (pin != "1234")
+                    {
+                        for (int i = 2; i > 0; i--)
+                        {
+                            Console.WriteLine("Wrong pin! Tries remaining " + i + ".");
+                            Console.Write("Enter pin: ");
+                            pin = Console.ReadLine();
+
+                            if (pin == "1234")
+                            {
+                                AdminFunctions.DoAdminTasks();
+                                continue;
+                            }
+                        }
+                        continue;
+                    }
+
+                    AdminFunctions.DoAdminTasks();
+                    continue;
                 }
-                else
+
+                using (BankContext context = new BankContext())
                 {
-                    Console.WriteLine("No user with that user name or pin exists");
+                    User existingUser = context.Users.FirstOrDefault(u => u.Name.ToLower() == userName.ToLower() && u.Pin == pin);
+                  
+                    if (existingUser != null)
+                    {
+                        Console.WriteLine($"\nLogged in to user {userName.ToUpper()}\n");
+                        UserFunctions.PerformUserChoices(existingUser, context);
+                    }
+                    else
+                    {
+                        Console.WriteLine("No user with that username or pin exists");
+                    }
                 }
-
             }
-
-            
-
-            //user login here
         }
     }
 }

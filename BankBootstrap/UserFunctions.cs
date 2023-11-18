@@ -14,14 +14,15 @@ namespace BankBootstrap
     {
         private static User currentUser;
         private static BankContext currentContext;
-        private static void PerfromUserChoices(User user, BankContext context, string choice)
+        private static string choice;
+        public static void PerformUserChoices(User user, BankContext context)
         {
             currentUser = user;
             currentContext = context;
 
             while (choice != "6")
             {
-                DisplayOptions(choice);
+                DisplayOptions();
 
                 switch (choice)
                 {
@@ -48,14 +49,15 @@ namespace BankBootstrap
                     case "6":
                         LogOut();
                         break;
+
+                    default:
+                        break;
                 }          
             }
         }
 
-        private static void DisplayOptions(string choice)
+        private static string DisplayOptions()
         {
-            bool exitLoop = false;
-
             Console.WriteLine($"[1] See your accounts and balance");
             Console.WriteLine($"[2] Transfer money between accounts");
             Console.WriteLine($"[3] Withdraw");
@@ -63,29 +65,27 @@ namespace BankBootstrap
             Console.WriteLine($"[5] Open new account");
             Console.WriteLine($"[6] Log out");
 
-            Console.Write("Enter an option: ");
+            Console.Write("Enter an option using [1] [2] [3] [4] [5] [6]: ");
             
-            while (!exitLoop)
-            {
-                choice = Console.ReadLine();
+            choice = Console.ReadLine();
 
-                if (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5" && choice != "6")
-                {
-                    Console.WriteLine("Enter an option using [1] [2] [3] [4] [5] [6]");
-                }
-                else
-                {
-                    exitLoop = true;
-                }
-            }
+            Console.WriteLine();
+            return choice;
         }
 
         private static void ShowAccountBalance()
         {
-            Console.WriteLine("Your accounts and balances:");
-            foreach (var account in currentUser.Accounts)
+            if (currentUser.Accounts.Count() == 0)
             {
-                Console.WriteLine($"Account: {account.Name}, Balance: {account.Balance}");
+                Console.WriteLine("You have no accounts yet. Press 5 to open a new account.");
+            }
+            else
+            {
+                Console.WriteLine("Your accounts and balances:");
+                foreach (var account in currentUser.Accounts)
+                {
+                    Console.WriteLine($"Account: {account.Name}\nBalance: {account.Balance}\n");
+                }
             }
         }
 
@@ -239,7 +239,7 @@ namespace BankBootstrap
 
             while (!exitLoop)
             {
-                Console.Write("What would you like the account name to be?");
+                Console.Write("What would you like the account name to be? ");
                 string input1 = Console.ReadLine();
 
                 Account newAccount = new Account()
@@ -253,7 +253,7 @@ namespace BankBootstrap
 
                 if (success)
                 {
-                    Console.WriteLine($"Successfully created account {input1}.");
+                    Console.WriteLine($"Successfully created account {input1}.\n");
                     exitLoop = true;
                 }
                 else
@@ -277,7 +277,7 @@ namespace BankBootstrap
 
         private static void LogOut()
         {
-            Console.WriteLine("Logging out...");
+            Console.WriteLine("Logging out...\n");
         }
     }
 }
