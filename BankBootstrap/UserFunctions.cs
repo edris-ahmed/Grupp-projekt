@@ -83,7 +83,7 @@ namespace BankBootstrap
             }
             else
             {
-                Console.WriteLine("Your accounts and balances:22");
+                Console.WriteLine("Your accounts and balances:");
                 foreach (var account in currentUser.Accounts)
                 {
                     Console.WriteLine($"Account: {account.Name}\nBalance: {account.Balance}\n");
