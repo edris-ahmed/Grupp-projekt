@@ -115,8 +115,8 @@ namespace BankBootstrap
                     break;
                 }
 
-                var selectedAccounts1 = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
-                var selectedAccounts2 = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input2.ToLower() || a.Id.ToString() == input2);
+                var selectedAccounts1 = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+                var selectedAccounts2 = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input2.ToLower() || a.Id.ToString() == input2);
 
                 if (selectedAccounts1 != null && selectedAccounts2 != null)
                 {
@@ -167,7 +167,7 @@ namespace BankBootstrap
                     break;
                 }
 
-                var selectedAccount = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
 
                 if (selectedAccount != null)
                 {
@@ -216,7 +216,7 @@ namespace BankBootstrap
                     break;
                 }
 
-                var selectedAccount = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1 || a.Id.ToString() == input1);
+                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1 || a.Id.ToString() == input1);
 
                 if (selectedAccount != null)
                 {
