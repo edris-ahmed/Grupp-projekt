@@ -17,7 +17,7 @@ namespace BankBootstrap
         {
             using (BankContext context = new BankContext())
             {
-                Console.WriteLine("Current users in system:");
+                Console.WriteLine("\nCurrent users in system:");
                 List<User> users = DbHelper.GetAllUsers(context);
 
                 foreach (User user in users)
@@ -25,7 +25,7 @@ namespace BankBootstrap
                     Console.WriteLine($"{user.Name}");
                 }
 
-                Console.WriteLine($"Total number of users = {users.Count()}");
+                Console.WriteLine($"Total number of users = {users.Count()}\n");
                 Console.WriteLine("[C] to create new user");
                 Console.WriteLine("[X] to exit back to [Main]");
 
@@ -41,6 +41,7 @@ namespace BankBootstrap
                             break;
 
                         case "x":
+                            Console.WriteLine();
                             return;
 
                         default:

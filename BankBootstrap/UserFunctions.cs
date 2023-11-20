@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -76,10 +77,17 @@ namespace BankBootstrap
 
         private static void ShowAccountBalance()
         {
-            Console.WriteLine("Your accounts and balances:\n");
-            foreach (var account in currentContext.Accounts)
+            if (currentUser.Accounts.Count() == 0)
             {
-                Console.WriteLine($"Account: {account.Name}\nBalance: {account.Balance}\n");
+                Console.WriteLine("Create an account first.");
+            }
+            else
+            {
+                Console.WriteLine("Your accounts and balances:22");
+                foreach (var account in currentUser.Accounts)
+                {
+                    Console.WriteLine($"Account: {account.Name}\nBalance: {account.Balance}\n");
+                }
             }
         }
 
@@ -95,6 +103,7 @@ namespace BankBootstrap
                 if (input1.ToLower() == "quit")
                 {
                     exitLoop = true;
+                    break;
                 }
 
                 Console.Write("Choose the account to transfer money to enter [Name] or [Id] or [Quit] to go back to the options: ");
@@ -103,6 +112,7 @@ namespace BankBootstrap
                 if (input2.ToLower() == "quit")
                 {
                     exitLoop = true;
+                    break;
                 }
 
                 var selectedAccounts1 = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
@@ -121,23 +131,23 @@ namespace BankBootstrap
                                 selectedAccounts1.Balance -= transferAmount;
                                 selectedAccounts2.Balance += transferAmount;
                                 currentContext.SaveChanges();
-                                Console.WriteLine($"Transfer successfull. Updated balance for account {selectedAccounts2.Name} is {selectedAccounts2.Balance}");
+                                Console.WriteLine($"Transfer successfull. Updated balance for account {selectedAccounts2.Name} is {selectedAccounts2.Balance}\n");
                                 exitLoop = true;
                             }
                             else
                             {
-                                Console.WriteLine("Insufficent funds.");
+                                Console.WriteLine("Insufficent funds.\n");
                             }
                         }
                     }
                     else
                     {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
+                        Console.WriteLine("Invalid input. Please enter a valid number.\n");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("One or both of the accounts did not match the criteria.");
+                    Console.WriteLine("One or both of the accounts did not match the criteria.\n");
                 }
             }
         }
@@ -154,6 +164,7 @@ namespace BankBootstrap
                 if (input1.ToLower() == "quit")
                 {
                     exitLoop = true;
+                    break;
                 }
 
                 var selectedAccount = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
@@ -170,22 +181,22 @@ namespace BankBootstrap
                             {
                                 selectedAccount.Balance -= withdrawAmount;
                                 currentContext.SaveChanges();
-                                Console.WriteLine($"Withdrawal successfull. Updated balance: {selectedAccount.Balance}");
+                                Console.WriteLine($"Withdrawal successfull. Updated balance: {selectedAccount.Balance}\n");
                                 exitLoop = true;
                             }
                             else
                             {
-                                Console.WriteLine("Insufficient funds.");
+                                Console.WriteLine("Insufficient funds.\n");
                             }
                         }                    }
                     else
                     {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
+                        Console.WriteLine("Invalid input. Please enter a valid number.\n");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("No account matching the criteria found.");
+                    Console.WriteLine("No account matching the criteria found.\n");
                 }
             }
         }
@@ -202,6 +213,7 @@ namespace BankBootstrap
                 if (input1.ToLower() == "quit")
                 {
                     exitLoop = true;
+                    break;
                 }
 
                 var selectedAccount = currentContext.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1 || a.Id.ToString() == input1);
@@ -222,12 +234,12 @@ namespace BankBootstrap
                     }
                     else
                     {
-                        Console.WriteLine("Invalid input. Please enter a valid number.");
+                        Console.WriteLine("Invalid input. Please enter a valid number.\n");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("No account matching the criteria found.");
+                    Console.WriteLine("No account matching the criteria found.\n");
                 }
             }
             
@@ -269,6 +281,7 @@ namespace BankBootstrap
 
                     if (input1 == "no")
                     {
+                        Console.WriteLine();
                         exitLoop = true;
                     }
                 }

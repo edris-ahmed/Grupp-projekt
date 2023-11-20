@@ -1,6 +1,6 @@
 ﻿using BankBootstrap.Data;
 using BankBootstrap.Models;
-using BankBootstrap.Utilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BankBootstrap
 {
@@ -51,7 +51,9 @@ namespace BankBootstrap
 
                 using (BankContext context = new BankContext())
                 {
-                    User existingUser = context.Users.FirstOrDefault(u => u.Name.ToLower() == userName.ToLower() && u.Pin == pin);
+                    User existingUser = context.Users
+                        .Include(u => u.Accounts)
+                        .FirstOrDefault(u => u.Name.ToLower() == userName.ToLower() && u.Pin == pin);
                   
                     if (existingUser != null)
                     {
@@ -60,7 +62,7 @@ namespace BankBootstrap
                     }
                     else
                     {
-                        Console.WriteLine("\nNo user with that username or pin exists\n");
+                        Console.WriteLine("\nNo user with that username or pin exists.\n");
                     }
                 }
             }
