@@ -12,7 +12,7 @@ namespace BankBootstrap.Data
     {
         public DbSet<User> Users { get; set; }
         public DbSet<Account> Accounts { get; set; }
- 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=(LocalDB)\\MSSQLLocalDB;Initial Catalog=Bank;Integrated Security=True");
