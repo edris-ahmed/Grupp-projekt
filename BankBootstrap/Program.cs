@@ -6,6 +6,10 @@ namespace BankBootstrap
 {
     internal class Program
     {
+        private static int consecutiveFailures = 0;
+        private static DateTime cooldownStartTime = DateTime.MinValue;
+        private static readonly int maxConsecutiveFailures = 3;
+        private static readonly int cooldownDurationMinutes = 3;
         static void Main(string[] args)
         {
             while (true)
@@ -30,6 +34,8 @@ namespace BankBootstrap
                 {
                     if (pin != "1234")
                     {
+                        consecutiveFailures++;
+
                         for (int i = 2; i > 0; i--)
                         {
                             Console.WriteLine("Wrong pin! Tries remaining " + i + ".");
@@ -41,12 +47,19 @@ namespace BankBootstrap
                                 AdminFunctions.DoAdminTasks();
                                 continue;
                             }
+                            consecutiveFailures++;
                         }
+
+                        if (consecutiveFailures == 3)
+                        {
+                            Console.WriteLine($"To many consecutive failures. Cooldown for 3 minutes. ");
+                            Thread.Sleep(consecutiveFailures * 60 * 1000);
+                            consecutiveFailures = 0;
+                        }
+
+                        Console.WriteLine("Redirecting to start...\n");
                         continue;
                     }
-
-                    AdminFunctions.DoAdminTasks();
-                    continue;
                 }
 
                 using (BankContext context = new BankContext())
@@ -63,6 +76,42 @@ namespace BankBootstrap
                     else
                     {
                         Console.WriteLine("\nNo user with that username or pin exists.\n");
+                        consecutiveFailures++;
+
+                        for (int i = 2; i > 0; i--)
+                        {
+                            Console.WriteLine($"Tries remaining: {i}");
+
+                            Console.Write("Enter username: ");
+                            userName = Console.ReadLine();
+
+                            Console.Write("Enter pin: ");
+                            pin = Console.ReadLine();
+
+                            Console.WriteLine();
+
+                            existingUser = context.Users
+                           .Include(u => u.Accounts)
+                           .FirstOrDefault(u => u.Name.ToLower() == userName.ToLower() && u.Pin == pin);
+
+                            if (existingUser != null)
+                            {
+                                consecutiveFailures = 0;
+                                UserFunctions.PerformUserChoices(existingUser, context);
+                                break;
+                            }
+                            consecutiveFailures++;
+                        }
+
+                        if (consecutiveFailures == 3)
+                        {
+                            Console.WriteLine($"To many consecutive failures. Cooldown for 3 minutes. ");
+                            Thread.Sleep(consecutiveFailures * 60 * 1000);
+                            consecutiveFailures = 0;
+                        }
+
+                        Console.WriteLine("Redirecting to start...\n");
+                        continue;
                     }
                 }
             }

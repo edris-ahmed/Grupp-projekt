@@ -88,6 +88,9 @@ namespace BankBootstrap
             {
                 Console.WriteLine($"Failed to create user with username {username}");
             }
+
+            Console.Write("Press enter to get back to the menu: ");
+            Console.ReadLine();
         }
 
         private static void DeleteUser(BankContext context)
@@ -104,6 +107,9 @@ namespace BankBootstrap
                     context.Users.Remove(userToDelete);
                     context.SaveChanges();
                     Console.WriteLine($"Successfully deleted user: {userToDelete.Name}\n");
+
+                    Console.Write("Press enter to get back to the menu: ");
+                    Console.ReadLine();
                     break;
                 }
                 else
@@ -133,6 +139,9 @@ namespace BankBootstrap
             }
 
             Console.WriteLine($"Total number of users = {users.Count()}\n");
+
+            Console.Write("Press enter to get back to the menu: ");
+            Console.ReadLine();
             Console.WriteLine();
         }
     }
