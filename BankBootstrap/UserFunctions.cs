@@ -53,6 +53,7 @@ namespace BankBootstrap
                         break;
 
                     default:
+                        Console.WriteLine("Invalid choice");
                         break;
                 }          
             }

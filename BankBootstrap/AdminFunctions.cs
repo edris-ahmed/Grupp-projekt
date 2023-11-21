@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq.Expressions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BankBootstrap
 {
@@ -26,11 +27,14 @@ namespace BankBootstrap
                 }
 
                 Console.WriteLine($"Total number of users = {users.Count()}\n");
-                Console.WriteLine("[C] to create new user");
-                Console.WriteLine("[X] to exit back to [Main]");
 
                 while (true)
                 {
+                    Console.WriteLine("[C] to create new user");
+                    Console.WriteLine("[D] to delete user");
+                    Console.WriteLine("[L] to see the list of users again");
+                    Console.WriteLine("[X] to exit back to [Main]");
+
                     Console.Write("Enter command: ");
                     string command = Console.ReadLine().ToLower();
 
@@ -38,6 +42,14 @@ namespace BankBootstrap
                     {
                         case "c":
                             CreateUser(context);
+                            break;
+
+                        case "d":
+                            DeleteUser(context);
+                            break;
+
+                        case "l":
+                            ListOfUsers(context);
                             break;
 
                         case "x":
@@ -54,7 +66,7 @@ namespace BankBootstrap
 
         private static void CreateUser(BankContext context)
         {
-            Console.WriteLine("Create user");
+            Console.WriteLine("\nCreate USER");
             Console.Write("Enter username: ");
             string username = Console.ReadLine();
 
@@ -70,7 +82,7 @@ namespace BankBootstrap
             
             if (success)
             {
-                Console.WriteLine($"Created user {username} with pin: {pin}");
+                Console.WriteLine($"Created user {username} with pin: {pin}\n");
             }
             else
             {
@@ -78,5 +90,50 @@ namespace BankBootstrap
             }
         }
 
+        private static void DeleteUser(BankContext context)
+        {
+            while (true)
+            {
+                Console.Write("Enter the name of the user you want to delete: ");
+                string input = Console.ReadLine();
+
+                var userToDelete = context.Users.FirstOrDefault(u => u.Name.ToLower() == input.ToLower());
+
+                if (userToDelete != null)
+                {
+                    context.Users.Remove(userToDelete);
+                    context.SaveChanges();
+                    Console.WriteLine($"Successfully deleted user: {userToDelete.Name}\n");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("No account matching the criteria.\n");
+                }
+            }
+
+           
+            
+
+            //if (context.Entry(user).State == Microsoft.EntityFrameworkCore.EntityState.Detached)
+            //{
+            //    context.Users.Attach(user);
+            //}
+
+            
+        }
+        private static void ListOfUsers(BankContext context)
+        {
+            Console.WriteLine("\nCurrent users in system:");
+            List<User> users = DbHelper.GetAllUsers(context);
+
+            foreach (User user in users)
+            {
+                Console.WriteLine($"{user.Name}");
+            }
+
+            Console.WriteLine($"Total number of users = {users.Count()}\n");
+            Console.WriteLine();
+        }
     }
 }
