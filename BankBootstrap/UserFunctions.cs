@@ -16,6 +16,7 @@ namespace BankBootstrap
         private static User currentUser;
         private static BankContext currentContext;
         private static string choice;
+
         public static void PerformUserChoices(User user, BankContext context)
         {
             currentUser = user;
@@ -82,7 +83,7 @@ namespace BankBootstrap
             {
                 Console.WriteLine("Create an account first.");
 
-                Console.Write("Press enter to get back to the menu: ");
+                Console.Write("Press enter to get back to the menu: \n");
                 Console.ReadLine();
             }
             else
@@ -93,9 +94,6 @@ namespace BankBootstrap
                     Console.WriteLine($"Account: {account.Name}\nBalance: {account.Balance:C2}\n");
                 }
             }
-
-            Console.Write("Press enter to get back to the menu: ");
-            Console.ReadLine();
         }
 
         private static void TransferBetweenAccounts()
@@ -142,7 +140,7 @@ namespace BankBootstrap
                                 Console.WriteLine($"Updated balance for account {selectedAccounts1.Name} is {selectedAccounts1.Balance:C2}\n");
                                 exitLoop = true;
 
-                                Console.Write("Press enter to get back to the menu: ");
+                                Console.Write("Press enter to get back to the menu: \n");
                                 Console.ReadLine();
                             }
                             else
@@ -190,7 +188,7 @@ namespace BankBootstrap
                         {
                             if (selectedAccount.Balance >= withdrawAmount)
                             {
-                                Console.WriteLine("Please enter your pin to withdraw.");
+                                Console.Write("Please enter your pin to withdraw: ");
                                 input1 = Console.ReadLine();
 
                                 if(input1 == currentUser.Pin)
@@ -200,7 +198,7 @@ namespace BankBootstrap
                                     Console.WriteLine($"Withdrawal successfull. Updated balance: {selectedAccount.Balance:C2}\n");
                                     exitLoop = true;
 
-                                    Console.Write("Press enter to get back to the menu: ");
+                                    Console.Write("Press enter to get back to the menu: \n");
                                     Console.ReadLine();
                                 }
                                 else
@@ -208,7 +206,7 @@ namespace BankBootstrap
                                     Console.WriteLine("Wrong pin!");
                                     exitLoop = true;
 
-                                    Console.Write("Press enter to get back to the menu: ");
+                                    Console.Write("Press enter to get back to the menu: \n");
                                     Console.ReadLine();
                                 }
                                 
@@ -241,11 +239,12 @@ namespace BankBootstrap
 
                 if (input1.ToLower() == "quit")
                 {
+                    Console.WriteLine();
                     exitLoop = true;
                     break;
                 }
 
-                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1 || a.Id.ToString() == input1);
+                var selectedAccount = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
 
                 if (selectedAccount != null)
                 {
@@ -260,7 +259,7 @@ namespace BankBootstrap
                             Console.WriteLine($"Deposit successfull. Updated balance: {selectedAccount.Balance:C2}\n");
                             exitLoop = true;
 
-                            Console.Write("Press enter to get back to the menu: ");
+                            Console.Write("Press enter to get back to the menu: \n");
                             Console.ReadLine();
                         }
                     }
@@ -300,7 +299,7 @@ namespace BankBootstrap
                     Console.WriteLine($"Successfully created account {input1}.\n");
                     exitLoop = true;
 
-                    Console.Write("Press enter to get back to the menu: ");
+                    Console.Write("Press enter to get back to the menu: \n");
                     Console.ReadLine();
                 }
                 else
@@ -319,7 +318,7 @@ namespace BankBootstrap
                         Console.WriteLine();
                         exitLoop = true;
 
-                        Console.Write("Press enter to get back to the menu: ");
+                        Console.Write("Press enter to get back to the menu: \n");
                         Console.ReadLine();
                     }
                 }

@@ -89,7 +89,7 @@ namespace BankBootstrap
                 Console.WriteLine($"Failed to create user with username {username}");
             }
 
-            Console.Write("Press enter to get back to the menu: ");
+            Console.Write("Press enter to get back to the menu: \n");
             Console.ReadLine();
         }
 
