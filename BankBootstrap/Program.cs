@@ -32,6 +32,12 @@ namespace BankBootstrap
 
                 if (userName == "admin")
                 {
+                    if (pin == "1234")
+                    {
+                        AdminFunctions.DoAdminTasks();
+                        continue;
+                    }
+
                     if (pin != "1234")
                     {
                         consecutiveFailures++;
@@ -42,11 +48,7 @@ namespace BankBootstrap
                             Console.Write("Enter pin: ");
                             pin = Console.ReadLine();
 
-                            if (pin == "1234")
-                            {
-                                AdminFunctions.DoAdminTasks();
-                                continue;
-                            }
+                            
                             consecutiveFailures++;
                         }
 
@@ -87,6 +89,12 @@ namespace BankBootstrap
 
                             Console.Write("Enter pin: ");
                             pin = Console.ReadLine();
+
+                            if (userName == "admin" && pin == "1234")
+                            {
+                                AdminFunctions.DoAdminTasks();
+                                break;
+                            }
 
                             Console.WriteLine();
 
