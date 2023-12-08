@@ -1,6 +1,7 @@
 ﻿using BankBootstrap.Data;
 using BankBootstrap.Models;
 using BankBootstrap.Utilities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,22 +35,26 @@ namespace BankBootstrap
                         break;
 
                     case "2":
-                        TransferBetweenAccounts();
+                        TransferBetweenUserAccounts();
                         break;
 
                     case "3":
-                        WithdrawFromAccount();
+                        TransferBetweenUsers();
                         break;
 
                     case "4":
-                        DepositToAccount();
+                        WithdrawFromAccount();
                         break;
 
                     case "5":
+                        DepositToAccount();
+                        break;
+
+                    case "6":
                         OpenNewAccount();
                         break;
                         
-                    case "6":
+                    case "7":
                         LogOut();
                         break;
 
@@ -64,10 +69,11 @@ namespace BankBootstrap
         {
             Console.WriteLine($"[1] See your accounts and balance");
             Console.WriteLine($"[2] Transfer money between accounts");
-            Console.WriteLine($"[3] Withdraw");
-            Console.WriteLine($"[4] Deposit");
-            Console.WriteLine($"[5] Open new account");
-            Console.WriteLine($"[6] Log out");
+            Console.WriteLine($"[3] Transfer money between Users");
+            Console.WriteLine($"[4] Withdraw");
+            Console.WriteLine($"[5] Deposit");
+            Console.WriteLine($"[6] Open new account");
+            Console.WriteLine($"[7] Log out");
 
             Console.Write("Enter an option using [1] [2] [3] [4] [5] [6]: ");
             
@@ -96,7 +102,79 @@ namespace BankBootstrap
             }
         }
 
-        private static void TransferBetweenAccounts()
+        private static void TransferBetweenUsers()
+        {
+            bool exitLoop = false;
+
+            while (!exitLoop)
+            {
+                Console.Write("Enter the username of the recipient: ");
+                string recipientUsername = Console.ReadLine();
+
+                Console.Write("Choose the account to transfer money from (enter the account [Name] or [Id] or [Quit] to go back to the options): ");
+                string input1 = Console.ReadLine();
+
+                if (input1.ToLower() == "quit")
+                {
+                    exitLoop = true;
+                    break;
+                }
+
+                Console.Write("Choose the account to transfer money to (enter the account [Name] or [Id] or [Quit] to go back to the options): ");
+                string input2 = Console.ReadLine();
+
+                if (input2.ToLower() == "quit")
+                {
+                    exitLoop = true;
+                    break;
+                }
+
+                var selectedAccountSender = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+                var selectedAccountRecipient = currentContext.Users
+                    .Include(u => u.Accounts)
+                    .FirstOrDefault(u => u.Name.ToLower() == recipientUsername.ToLower())
+                    ?.Accounts
+                    .FirstOrDefault(a => a.Name.ToLower() == input2.ToLower() || a.Id.ToString() == input2);
+
+                if (selectedAccountSender != null && selectedAccountRecipient != null)
+                {
+                    Console.Write("Enter the transfer amount: ");
+
+                    if (double.TryParse(Console.ReadLine(), out double transferAmount))
+                    {
+                        if (transferAmount > 0)
+                        {
+                            if (selectedAccountSender.Balance >= transferAmount)
+                            {
+                                selectedAccountSender.Balance -= transferAmount;
+                                selectedAccountRecipient.Balance += transferAmount;
+                                currentContext.SaveChanges();
+                                Console.WriteLine($"Transfer successful. Updated balance for {recipientUsername}'s account ({selectedAccountRecipient.Name}) is {selectedAccountRecipient.Balance:C2}");
+                                Console.WriteLine($"Updated balance for your account ({selectedAccountSender.Name}) is {selectedAccountSender.Balance:C2}\n");
+                                exitLoop = true;
+
+                                Console.Write("Press enter to get back to the menu: \n");
+                                Console.ReadLine();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Insufficient funds.\n");
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input. Please enter a valid number.\n");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("One or both of the accounts did not match the criteria.\n");
+                }
+            }
+        }
+        
+        private static void TransferBetweenUserAccounts()
         {
             bool exitLoop = false;
 
