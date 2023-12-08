@@ -6,12 +6,14 @@ namespace BankBootstrap
 {
     internal class Program
     {
+        // Antal felaktiga försök och cooldown-variabler
         private static int consecutiveFailures = 0;
         private static DateTime cooldownStartTime = DateTime.MinValue;
         private static readonly int maxConsecutiveFailures = 3;
         private static readonly int cooldownDurationMinutes = 3;
         static void Main(string[] args)
         {
+            // Huvudloopen för programmet
             while (true)
             {
                 Console.WriteLine("Welcome to NET23Bank");
@@ -19,6 +21,7 @@ namespace BankBootstrap
 
                 string userChoice = Console.ReadLine().ToLower();
 
+                // Avsluta programmet om användaren väljer att sluta
                 if (userChoice == "quit")
                 {
                     break;
@@ -30,6 +33,7 @@ namespace BankBootstrap
                 Console.Write("Enter pin: ");
                 string pin = Console.ReadLine();
 
+                // Inloggning för administratören
                 if (userName == "admin")
                 {
                     if (pin == "1234")
@@ -40,6 +44,7 @@ namespace BankBootstrap
 
                     if (pin != "1234")
                     {
+                        // Hantera felaktiga pinkoder
                         consecutiveFailures++;
 
                         for (int i = 2; i > 0; i--)
@@ -52,6 +57,7 @@ namespace BankBootstrap
                             consecutiveFailures++;
                         }
 
+                        // Om det finns för många felaktiga försök, vänta i en viss tid
                         if (consecutiveFailures == 3)
                         {
                             Console.WriteLine($"To many consecutive failures. Cooldown for 3 minutes. ");
@@ -63,7 +69,8 @@ namespace BankBootstrap
                         continue;
                     }
                 }
-
+                
+                // Använd Entity Framework för att söka efter befintlig användare
                 using (BankContext context = new BankContext())
                 {
                     User existingUser = context.Users
@@ -72,11 +79,13 @@ namespace BankBootstrap
                   
                     if (existingUser != null)
                     {
+                        // Användarval efter inloggning
                         Console.WriteLine($"\nLogged in to user {userName.ToUpper()}\n");
                         UserFunctions.PerformUserChoices(existingUser, context);
                     }
                     else
                     {
+                        // Hantera felaktiga inloggningsförsök för användare
                         Console.WriteLine("\nNo user with that username or pin exists.\n");
                         consecutiveFailures++;
 
@@ -90,6 +99,7 @@ namespace BankBootstrap
                             Console.Write("Enter pin: ");
                             pin = Console.ReadLine();
 
+                            // Kontrollera om användaren är administratör efter felaktiga försök
                             if (userName == "admin" && pin == "1234")
                             {
                                 AdminFunctions.DoAdminTasks();
@@ -111,6 +121,7 @@ namespace BankBootstrap
                             consecutiveFailures++;
                         }
 
+                        // Om det finns för många felaktiga försök, vänta i en viss tid
                         if (consecutiveFailures == 3)
                         {
                             Console.WriteLine($"To many consecutive failures. Cooldown for 3 minutes. ");

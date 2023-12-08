@@ -104,13 +104,16 @@ namespace BankBootstrap
 
         private static void TransferBetweenUsers()
         {
+            // kontrollera loopen
             bool exitLoop = false;
 
             while (!exitLoop)
             {
+                // Be användaren ange mottagarens användarnamn
                 Console.Write("Enter the username of the recipient: ");
                 string recipientUsername = Console.ReadLine();
 
+                // Be användaren välja konto att överföra pengar från
                 Console.Write("Choose the account to transfer money from (enter the account [Name] or [Id] or [Quit] to go back to the options): ");
                 string input1 = Console.ReadLine();
 
@@ -120,30 +123,39 @@ namespace BankBootstrap
                     break;
                 }
 
+                // Be användaren välja konto att överföra pengar till
                 Console.Write("Choose the account to transfer money to (enter the account [Name] or [Id] or [Quit] to go back to the options): ");
                 string input2 = Console.ReadLine();
 
+                // Kontrollera om användaren vill avsluta
                 if (input2.ToLower() == "quit")
                 {
                     exitLoop = true;
                     break;
                 }
-
+                // Hämta det valda konto från den aktuella användaren (avsändaren)
                 var selectedAccountSender = currentUser.Accounts.FirstOrDefault(a => a.Name.ToLower() == input1.ToLower() || a.Id.ToString() == input1);
+
+                // Hämta det valda kontot från den andra användaren (mottagaren)
                 var selectedAccountRecipient = currentContext.Users
                     .Include(u => u.Accounts)
                     .FirstOrDefault(u => u.Name.ToLower() == recipientUsername.ToLower())
                     ?.Accounts
                     .FirstOrDefault(a => a.Name.ToLower() == input2.ToLower() || a.Id.ToString() == input2);
 
+                // Kontrollera om båda kontona är giltiga
                 if (selectedAccountSender != null && selectedAccountRecipient != null)
                 {
+                    // Be användaren ange överföringsbeloppet
                     Console.Write("Enter the transfer amount: ");
 
+                    // Kontrollera om det angivna beloppet är giltigt
                     if (double.TryParse(Console.ReadLine(), out double transferAmount))
                     {
+                        // Kontrollera om överföringsbeloppet är större än noll
                         if (transferAmount > 0)
                         {
+                            // Kontrollera om avsändaren har tillräckligt med pengar
                             if (selectedAccountSender.Balance >= transferAmount)
                             {
                                 selectedAccountSender.Balance -= transferAmount;
@@ -151,24 +163,30 @@ namespace BankBootstrap
                                 currentContext.SaveChanges();
                                 Console.WriteLine($"Transfer successful. Updated balance for {recipientUsername}'s account ({selectedAccountRecipient.Name}) is {selectedAccountRecipient.Balance:C2}");
                                 Console.WriteLine($"Updated balance for your account ({selectedAccountSender.Name}) is {selectedAccountSender.Balance:C2}\n");
+
+                                // Avsluta loopen
                                 exitLoop = true;
 
+                                // Be användaren trycka på enter för att återgå till menyn
                                 Console.Write("Press enter to get back to the menu: \n");
                                 Console.ReadLine();
                             }
                             else
                             {
+                                // Visa meddelande om otillräckliga pengar
                                 Console.WriteLine("Insufficient funds.\n");
                             }
                         }
                     }
                     else
                     {
+                        // Visa meddelande om ogiltig inmatning
                         Console.WriteLine("Invalid input. Please enter a valid number.\n");
                     }
                 }
                 else
                 {
+                    // Visa felmeddelande för ogiltiga konton
                     Console.WriteLine("One or both of the accounts did not match the criteria.\n");
                 }
             }
